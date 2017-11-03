@@ -1,16 +1,13 @@
 language: node
 sudo: false
 before_install:
-  - npm i -g yarn
   - openssl aes-256-cbc -K $encrypted_9523ba30eeb5_key -iv $encrypted_9523ba30eeb5_iv
     -in the-wilson-post-3ab855a12d9c.json.enc -out the-wilson-post-3ab855a12d9c.json
     -d
-install:
-  - yarn
-  - yarn build
 script:
   - node -v
   - yarn full-test
+  - yarn build
 deploy:
   provider: gae
   keyfile: "the-wilson-post-3ab855a12d9c.json"
