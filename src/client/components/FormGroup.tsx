@@ -12,9 +12,7 @@ interface Props {
 const FormGroup = ({ field, label, value, onChange, style, children }: Props): JSX.Element => {
   const props: Pick<Props, 'value' | 'onChange' | 'style'> = {};
 
-  if (value) {
-    props.value = value;
-  }
+  props.value = value ? value : '';
 
   if (onChange) {
     props.onChange = onChange;

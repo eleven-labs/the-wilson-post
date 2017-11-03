@@ -1,0 +1,9 @@
+.scheduler .form-fields {
+  display: flex;
+  flex-direction: row;
+
+  .column:first-child {
+    flex-grow: 1;
+    padding-right: 20px;
+  }
+}
