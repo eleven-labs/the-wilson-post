@@ -1,5 +1,11 @@
 runtime: nodejs
 env: flex
+threadsafe: true
+automatic_scaling:
+  min_num_instances: 2
+  max_num_instances: 4
+  cpu_utilization:
+    target_utilization: 0.5
 health_check:
   enable_health_check: true
   check_interval_sec: 5
