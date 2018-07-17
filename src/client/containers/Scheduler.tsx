@@ -1,10 +1,11 @@
-import { Post, State } from 'common';
+import { Dict, Post, State } from 'common';
 import { History } from 'history';
 import * as moment from 'moment';
 import 'moment/locale/fr';
 import * as React from 'react';
 import InfiniteCalendar from 'react-infinite-calendar';
 import { connect } from 'react-redux';
+import * as slug from 'slug';
 
 import {
   requestSchedulePost,
@@ -23,6 +24,7 @@ interface Props {
 
 interface InternalState {
   title?: string;
+  titleSlug?: string;
   description?: string;
   date: moment.Moment;
   focused: boolean;
@@ -32,7 +34,8 @@ interface DispatchProps {
   requestSchedulePost: (post: Post) => SchedulePostRequestAction;
 }
 
-const mapStateToProps = ({ selectedPost }: State): State => ({
+const mapStateToProps = ({ posts, selectedPost }: State): State => ({
+  posts,
   selectedPost,
 });
 
@@ -50,6 +53,7 @@ const initialState: InternalState = {
 };
 
 class Scheduler extends React.Component<AllProps, InternalState> {
+  postsMapping: Dict<Post>;
   state = initialState;
 
   constructor(props: AllProps) {
@@ -61,15 +65,25 @@ class Scheduler extends React.Component<AllProps, InternalState> {
     this.onSaveClick = this.onSaveClick.bind(this);
   }
 
+  componentDidMount() {
+    const { posts = [] } = this.props;
+
+    this.postsMapping = posts.reduce((acc, post) => ({
+      ...acc,
+      [slug(post.title)]: post,
+    }), {} as Dict<Post>);
+  }
+
   componentWillReceiveProps(nextProps: Props) {
     this.setState({
       title: nextProps.title,
+      titleSlug: slug(nextProps.title || '').toLowerCase(),
       description: nextProps.description,
     });
   }
 
-  onTitleChange(event: React.SyntheticEvent<HTMLInputElement>) {
-    this.setState({ title: event.currentTarget.value });
+  onTitleChange({ currentTarget: { value: title = '' } }: React.SyntheticEvent<HTMLInputElement>) {
+    this.setState({ title, titleSlug: slug(title).toLowerCase() });
   }
 
   onDescriptionChange(event: React.SyntheticEvent<HTMLTextAreaElement>) {
@@ -86,7 +100,7 @@ class Scheduler extends React.Component<AllProps, InternalState> {
   }
 
   render() {
-    const { title = '', description = '' } = this.state;
+    const { title = '', titleSlug = '', description = '' } = this.state;
 
     return (
       <div className="scheduler post-content container">
@@ -100,6 +114,9 @@ class Scheduler extends React.Component<AllProps, InternalState> {
                 value={title}
                 onChange={this.onTitleChange}
                 style={{ height: 40, lineHeight: 40 }}
+                info={
+                  <div>{titleSlug}</div>
+                }
               />
 
               <FormGroup

@@ -7,19 +7,21 @@ interface Props {
   onChange?: (event: React.SyntheticEvent<HTMLElement>) => void;
   children?: React.ReactElement<any>;
   style?: React.CSSProperties;
+  info?: React.ReactElement<any>;
 }
 
-const FormGroup = ({ field, label, value, onChange, style, children }: Props): JSX.Element => {
-  const props: Pick<Props, 'value' | 'onChange' | 'style'> = {};
+const FormGroup = (props: Props): JSX.Element => {
+  const { field, label, value, onChange, style, children, info } = props;
+  const childrenProps: Pick<Props, 'value' | 'onChange' | 'style'> = {};
 
-  props.value = value ? value : '';
+  childrenProps.value = value ? value : '';
 
   if (onChange) {
-    props.onChange = onChange;
+    childrenProps.onChange = onChange;
   }
 
   if (style) {
-    props.style = style;
+    childrenProps.style = style;
   }
 
   return (
@@ -27,9 +29,10 @@ const FormGroup = ({ field, label, value, onChange, style, children }: Props): J
       <div>
         <label htmlFor={field}>{label}</label>
       </div>
-      {children ? React.cloneElement(children, props) : (
-        <input {...props} />
+      {children ? React.cloneElement(children, childrenProps) : (
+        <input {...childrenProps} />
       )}
+      {!children && info}
     </div>
   );
 };

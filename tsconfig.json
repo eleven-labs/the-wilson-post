@@ -21,7 +21,10 @@
     "sourceMap": true,
     "strictNullChecks": true,
     "target": "es5",
-    "outDir": "dist"
+    "outDir": "dist",
+    "types": [
+      "webpack-env"
+    ]
   },
   "include": [
     "./definitions/**/*",
